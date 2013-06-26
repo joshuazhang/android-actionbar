@@ -273,21 +273,32 @@ public class ActionBar extends RelativeLayout implements OnClickListener {
     public static class IntentAction extends AbstractAction {
         private Context mContext;
         private Intent mIntent;
+        private View.OnClickListener onClickListener;
 
         public IntentAction(Context context, Intent intent, int drawable) {
             super(drawable);
             mContext = context;
             mIntent = intent;
         }
+        
+        public IntentAction(Context context, View.OnClickListener onClickListener, int drawable) {
+            super(drawable);
+            mContext = context;
+            this.onClickListener = onClickListener;
+        }
 
         @Override
         public void performAction(View view) {
-            try {
-               mContext.startActivity(mIntent); 
-            } catch (ActivityNotFoundException e) {
-                Toast.makeText(mContext,
-                        mContext.getText(R.string.actionbar_activity_not_found),
-                        Toast.LENGTH_SHORT).show();
+            if(mIntent != null) {
+                try {
+                   mContext.startActivity(mIntent); 
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(mContext,
+                            mContext.getText(R.string.actionbar_activity_not_found),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else if(onClickListener != null) {
+                onClickListener.onClick(view);
             }
         }
     }
